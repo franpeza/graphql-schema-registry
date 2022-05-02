@@ -29,54 +29,56 @@ function monitorConnections() {
 	});
 }
 
-app.get(`/health`, (req, res) => {
-	if (terminated) {
-		logger.info('health check failed due to application terminating');
+const setupApp = async () => {
+	app.get(`/health`, (req, res) => {
+		if (terminated) {
+			logger.info('health check failed due to application terminating');
 
-		return res.status(429).send('terminated');
-	}
+			return res.status(429).send('terminated');
+		}
 
-	return res.status(200).send('ok');
-});
-
-app.use(router);
-initGraphql(app);
-
-// eslint-disable-next-line
-app.use((err, req, res, next) => {
-	// NOSONAR - Don't remove the next argument!!!
-	const errorDetails = {
-		correlationId: get(req, 'correlationId', null),
-		url: req.url,
-	};
-
-	if (err.isJoi || err.isDisplayedToUser) {
-		logger.warn(err, errorDetails);
-
-		return res.status(err.statusCode || 400).json({
-			success: false,
-			message: get(err, 'details[0].message') || err.message,
-			details: get(err, 'details') || null,
-		});
-	}
-
-	logger.error(`A server error occurred: ${err.message}`, {
-		original_error: err,
-		...errorDetails,
+		return res.status(200).send('ok');
 	});
 
-	return res
-		.status(500)
-		.end(
-			'Whoops! Something broke in our servers and we cannot serve you this page at the moment.'
-		);
-});
+	app.use(router);
+	await initGraphql(app);
 
-app.all('*', (req, res) => {
-	logger.warn(`Wrong endpoint requested: ${req.url}`);
+	// eslint-disable-next-line
+	app.use((err, req, res, next) => {
+		// NOSONAR - Don't remove the next argument!!!
+		const errorDetails = {
+			correlationId: get(req, 'correlationId', null),
+			url: req.url,
+		};
 
-	return res.status(404).send('404 - Not found!');
-});
+		if (err.isJoi || err.isDisplayedToUser) {
+			logger.warn(err, errorDetails);
+
+			return res.status(err.statusCode || 400).json({
+				success: false,
+				message: get(err, 'details[0].message') || err.message,
+				details: get(err, 'details') || null,
+			});
+		}
+
+		logger.error(`A server error occurred: ${err.message}`, {
+			original_error: err,
+			...errorDetails,
+		});
+
+		return res
+			.status(500)
+			.end(
+				'Whoops! Something broke in our servers and we cannot serve you this page at the moment.'
+			);
+	});
+
+	app.all('*', (req, res) => {
+		logger.warn(`Wrong endpoint requested: ${req.url}`);
+
+		return res.status(404).send('404 - Not found!');
+	});
+};
 
 process.on('SIGTERM', () => {
 	terminated = true;
@@ -98,6 +100,7 @@ process.on('SIGTERM', () => {
 });
 
 export default async function init() {
+	await setupApp();
 	if (server) {
 		return server;
 	}
@@ -111,4 +114,4 @@ export default async function init() {
 	});
 
 	return server;
-};
+}
