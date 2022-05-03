@@ -4,15 +4,13 @@ import { composeAndValidate } from '@apollo/federation';
 
 import { PublicError } from './error';
 
-export function composeAndValidateSchema (servicesSchemaMap) {
+export function composeAndValidateSchema(servicesSchemaMap) {
 	let schema;
 	let errors = [];
 
 	try {
 		const serviceList = servicesSchemaMap.map((schema) => {
-			let typeDefs;
-
-			typeDefs = parse(schema.type_defs);
+			const typeDefs = parse(schema.type_defs);
 
 			return {
 				name: schema.name,
@@ -22,6 +20,7 @@ export function composeAndValidateSchema (servicesSchemaMap) {
 		});
 
 		({ schema, errors } = composeAndValidate(serviceList));
+		// ({ schema, errors } = composeServices(serviceList));
 	} catch (error) {
 		logger.error(error.message);
 
@@ -35,4 +34,4 @@ export function composeAndValidateSchema (servicesSchemaMap) {
 	}
 
 	return schema;
-};
+}

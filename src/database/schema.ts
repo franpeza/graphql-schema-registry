@@ -112,7 +112,11 @@ const schemaModel = {
 	},
 
 	getSchemaByServiceVersions: async function ({ trx, services }) {
-		services = unionBy(services, await servicesModel.getActiveServices(trx), 'name');
+		services = unionBy(
+			services,
+			await servicesModel.getActiveServices(trx),
+			'name'
+		);
 
 		const schema = await trx('container_schema')
 			.select([
@@ -198,8 +202,12 @@ const schemaModel = {
 		let existingService = await servicesModel.getService(trx, service.name);
 
 		if (!existingService) {
-			existingService = await servicesModel.insertService(trx, service.name, service.url);
-		} else if (service.url && existingService.url != service.url) {
+			existingService = await servicesModel.insertService(
+				trx,
+				service.name,
+				service.url
+			);
+		} else if (service.url && existingService.url !== service.url) {
 			await trx('services')
 				.where('id', '=', existingService.id)
 				.update({ url: service.url });
@@ -366,7 +374,15 @@ const schemaModel = {
 			.first();
 	},
 
-	deleteSchema: async function ({ trx, name, version }: { trx: any; name: string; version: string }) {
+	deleteSchema: async function ({
+		trx,
+		name,
+		version,
+	}: {
+		trx: any;
+		name: string;
+		version: string;
+	}) {
 		return trx('container_schema')
 			.delete()
 			.leftJoin('services', 'container_schema.service_id', 'services.id')

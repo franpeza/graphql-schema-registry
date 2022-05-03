@@ -10,4 +10,4 @@ export async function deleteService({ name }) {
 		logger.info('Service was not deleted from DB (not found)', { name });
 	}
 	return services;
-};
+}

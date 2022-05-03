@@ -1,17 +1,18 @@
+/* eslint-disable no-console */
 // export const logger = console;
 
-export function info(...args){
+export function info(...args) {
 	console.info(...args);
 }
-export function warn(...args){
+export function warn(...args) {
 	console.warn(...args);
 }
-export function debug(...args){
+export function debug(...args) {
 	console.debug(...args);
 }
-export function log(...args){
+export function log(...args) {
 	console.log(...args);
 }
-export function error(...args){
+export function error(...args) {
 	console.error(...args);
 }
