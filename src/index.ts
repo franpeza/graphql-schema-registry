@@ -30,6 +30,11 @@ function monitorConnections() {
 }
 
 const setupApp = async () => {
+	if (process.env.NODE_ENV !== 'production') {
+		const { default: setupDev } = await import('./setupDev');
+		setupDev(app);
+	}
+
 	app.get(`/health`, (req, res) => {
 		if (terminated) {
 			logger.info('health check failed due to application terminating');
