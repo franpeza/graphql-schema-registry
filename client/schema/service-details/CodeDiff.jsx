@@ -30,16 +30,16 @@ const newStyles = {
 		},
 	},
 	emptyGutter: {
-		'min-width': '1px',
+		minWidth: '1px',
 		padding: '0',
 	},
 	gutter: {
-		'min-width': '1px',
+		minWidth: '1px',
 	},
 	line: {
-		'line-height': '1',
-		'font-size': '13px',
-		'font-family': 'Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace',
+		lineHeight: '1',
+		fontSize: '13px',
+		fontFamily: 'Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace',
 		'&:hover': {
 			background: '#000e95',
 		},
@@ -48,12 +48,12 @@ const newStyles = {
 		height: '18px',
 		width: 'auto',
 		pre: {
-			'line-height': '18px',
+			lineHeight: '18px',
 		},
 	},
 	diffContainer: {
 		pre: {
-			'line-height': '18px',
+			lineHeight: '18px',
 		},
 	},
 	marker: {
